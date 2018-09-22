@@ -3,15 +3,16 @@ spring:
     gateway:
       routes:
       - id: common
-        uri: http://10.124.210.86
+        uri: http://localhost:8000/hello
         order: 9000
         predicates:
-        - Path=/**
+        - Path=/proxy
         filters:
         - name: Hystrix
           args:
             name: yangFallBack
             fallbackUri: forward:/fallback
+      datasource: mongo
   data:
     mongodb:
       host: 106.12.80.244
@@ -38,3 +39,16 @@ spring:
         enabled: false
       web-stat-filter:
         enabled: false
+
+logging.level.org.springframework.cloud.gateway: debug
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: false
+    mappings:
+      enabled: false
