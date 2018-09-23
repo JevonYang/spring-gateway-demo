@@ -1,15 +1,33 @@
 spring:
   cloud:
     gateway:
-      datasource: mongo
+      datasource: false
       routes:
+      - id: service1_v1
+        uri: http://localhost:8000/hello
+        predicates:
+        - Path=/test
+        - Weight=service1, 50
+        filters:
+        - RequestRateLimiter=10, 20, #{@principalNameKeyResolver}
+      - id: service1_v2
+        uri: http://localhost:8000/demo
+        predicates:
+        - Path=/test
+        - Weight=service1, 50
+        filters:
+        - RequestRateLimiter=10, 20, #{@principalNameKeyResolver}
+        - name: Hystrix
+          args:
+            name: yangFallBack
+            fallbackUri: forward:/fallback
       - id: common
         uri: http://localhost:8000/hello
         order: 9000
         predicates:
-        - Path=/proxy/**
+        - Path=/proxy
         filters:
-        - RewritePath=/employee/(?<path>.*), /$\{path}
+        #- RequestRateLimiter=10000, 20000, #{@principalNameKeyResolver}
         - name: Hystrix
           args:
             name: yangFallBack
@@ -56,6 +74,8 @@ management:
       enabled: false
     mappings:
       enabled: false
+    metrics:
+      enabled: true
 
 hystrix:
   metrics:
