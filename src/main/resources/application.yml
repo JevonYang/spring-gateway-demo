@@ -1,18 +1,19 @@
 spring:
   cloud:
     gateway:
+      datasource: mongo
       routes:
       - id: common
         uri: http://localhost:8000/hello
         order: 9000
         predicates:
-        - Path=/proxy
+        - Path=/proxy/**
         filters:
+        - RewritePath=/employee/(?<path>.*), /$\{path}
         - name: Hystrix
           args:
             name: yangFallBack
             fallbackUri: forward:/fallback
-      datasource: mongo
   data:
     mongodb:
       host: 106.12.80.244
@@ -40,7 +41,10 @@ spring:
       web-stat-filter:
         enabled: false
 
-logging.level.org.springframework.cloud.gateway: debug
+logging:
+  level:
+    org.springframework.cloud:
+      gateway: debug
 
 management:
   endpoints:
@@ -52,3 +56,7 @@ management:
       enabled: false
     mappings:
       enabled: false
+
+hystrix:
+  metrics:
+    enabled: true
