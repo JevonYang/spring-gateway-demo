@@ -1,4 +1,4 @@
-package com.yang.gateway;
+package com.yang.gateway.handlers;
 
 import com.yang.gateway.model.User;
 import org.springframework.http.MediaType;

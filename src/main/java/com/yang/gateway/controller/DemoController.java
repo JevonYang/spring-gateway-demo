@@ -1,4 +1,4 @@
-package com.yang.gateway;
+package com.yang.gateway.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;

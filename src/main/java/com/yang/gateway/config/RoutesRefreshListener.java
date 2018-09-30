@@ -1,4 +1,4 @@
-package com.yang.gateway;
+package com.yang.gateway.config;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
