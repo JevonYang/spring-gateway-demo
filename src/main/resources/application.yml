@@ -1,37 +1,91 @@
 spring:
+  kafka:
+    template:
+      default-topic: gateway
+    bootstrap-servers: 10.124.210.54:9092,10.124.210.54:9093,10.124.210.55:9092,10.124.210.55:9093
+    consumer:
+      auto-offset-reset: latest
+      group-id: gateway
+      client-id: gateway
+    producer:
+      retries: 3
+      client-id: gateway
+      batch-size: 4096
+      buffer-memory: 40960
+    listener:
+      type: single
+      client-id: mip-gateway
   cloud:
     gateway:
       datasource: false
       routes:
-      - id: service1_v1
-        uri: http://localhost:8000/hello
+      - id: frontend
+        uri: http://localhost:8000
         predicates:
-        - Path=/test
+        - Path=/mip-front/**
         - Weight=service1, 50
         filters:
-        - RequestRateLimiter=10, 20, #{@principalNameKeyResolver}
-      - id: service1_v2
-        uri: http://localhost:8000/demo
+        - RewritePath=/(?<segment>.*), /$\{segment}
+
+      - id: frontend
+        uri: http://localhost:8000
         predicates:
-        - Path=/test
+        - Path=/mip-front/**
         - Weight=service1, 50
         filters:
-        - RequestRateLimiter=10, 20, #{@principalNameKeyResolver}
-        - name: Hystrix
-          args:
-            name: yangFallBack
-            fallbackUri: forward:/fallback
-      - id: common
-        uri: http://localhost:8000/hello
-        order: 9000
+        - RewritePath=/(?<segment>.*), /$\{segment}
+
+      - id: backend
+        uri: http://localhost:8000
+        order: 10
         predicates:
-        - Path=/proxy
+        - Path=/gateway/**
         filters:
-        #- RequestRateLimiter=10000, 20000, #{@principalNameKeyResolver}
-        - name: Hystrix
-          args:
-            name: yangFallBack
-            fallbackUri: forward:/fallback
+        - RewritePath=/(?<segment>.*), /$\{segment}
+
+#      - id: service1_v1
+#        uri: http://localhost:8000/hello
+#        predicates:
+#        - Path=/test
+#        - Weight=service1, 50
+#        filters:
+#        - name: RequestRateLimiter
+#          args:
+#        #    keyResolver: '#{@ipAddressKeyResolver}'
+#            in-memory-rate-limiter:
+#              replenish-rate: 10
+#              burst-capacity: 20
+#        - name: Hystrix
+#          args:
+#            name: yangFallBack
+#            fallbackUri: forward:/fallback
+#      - id: service1_v2
+#        uri: http://localhost:8000/demo
+#        predicates:
+#        - Path=/test
+#        - Weight=service1, 50
+#        filters:
+#        - name: RequestRateLimiter
+#          args:
+#        #    keyResolver: '#{@ipAddressKeyResolver}'
+#            in-memory-rate-limiter:
+#              replenish-rate: 10
+#              burst-capacity: 20
+#        - name: Hystrix
+#          args:
+#            name: yangFallBack
+#            fallbackUri: forward:/fallback
+#      - id: common
+#        uri: http://localhost:8000/hello
+#        order: 9000
+#        predicates:
+#        - Path=/proxy
+#        filters:
+#        #- RequestRateLimiter=10000, 20000, #{@principalNameKeyResolver}
+#        - name: Hystrix
+#          args:
+#            name: yangFallBack
+#            fallbackUri: forward:/fallback
   data:
     mongodb:
       host: 106.12.80.244
