@@ -1,0 +1,30 @@
+syntax = "proto3";
+option java_package = "com.yang.gateway.model";
+option java_outer_classname = "VisitLogEntity";
+
+message VisitLog {
+
+//    /**
+//     * maxPermits 最大存储令牌数
+//     */
+//    private Long maxPermits;
+//    /**
+//     * storedPermits 当前存储令牌数
+//     */
+//    private Long storedPermits;
+//    /**
+//     * intervalMillis 添加令牌时间间隔
+//     */
+//    private Long intervalMillis;
+//    /**
+//     * nextFreeTicketMillis 下次请求可以获取令牌的起始时间，默认当前系统时间
+//     */
+//    private Long nextFreeTicketMillis;
+
+//    Double permitsPerSecond, Integer maxBurstSeconds
+
+//    double permitsPerSecond = 1;
+//    int32 maxBurstSeconds=2;
+    string remoteAddress = 1;
+    string method = 2;
+}

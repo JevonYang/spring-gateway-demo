@@ -32,4 +32,10 @@ public class RoutesRefreshListener implements ApplicationEventPublisherAware {
         logger.info("---------->kafka的key: {} ------>kafka的value: {}", record.key(), record.value().toString());
         this.publisher.publishEvent(new RefreshRoutesEvent(this));
     }
+
+    @KafkaListener(topics = { "gateway-log" })
+    public void gatewayLogger(ConsumerRecord<?, ?> record) {
+        logger.info("---------->gateway-log key: {} ------>gateway-log value: {}", record.key(), record.value().toString());
+        //this.publisher.publishEvent(new RefreshRoutesEvent(this));
+    }
 }
