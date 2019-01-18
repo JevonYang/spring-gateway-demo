@@ -38,6 +38,9 @@ public class VisitLogFilter implements GlobalFilter, Ordered {
             VisitLogEntity.VisitLog.Builder builder = VisitLogEntity.VisitLog.newBuilder();
             builder.setMethod(request.getMethod().toString());
             builder.setRemoteAddress(remoteAddress);
+            log.info("request path" + request.getPath());
+            log.info("request cookies" + request.getCookies().toString());
+            log.info("request param" + request.getQueryParams().toString());
             kafkaTemplate.send("gateway-log",builder.build().toString());
         } catch (NullPointerException e) {
             e.printStackTrace();

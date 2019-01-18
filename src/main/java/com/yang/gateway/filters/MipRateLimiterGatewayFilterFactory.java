@@ -53,9 +53,9 @@ public class MipRateLimiterGatewayFilterFactory extends AbstractGatewayFilterFac
         return (exchange, chain) -> {
 
             try {
-//                if (rateLimiter.tryAcquire()) {
-//                    return chain.filter(exchange);
-//                }
+                if (rateLimiter.tryAcquire()) {
+                    return chain.filter(exchange);
+                }
 
                 if (redisRateLimiter.tryAcquire(5000L, TimeUnit.MILLISECONDS)) {
                     return chain.filter(exchange);
