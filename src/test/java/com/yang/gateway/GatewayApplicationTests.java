@@ -2,6 +2,8 @@ package com.yang.gateway;
 
 import com.alibaba.fastjson.JSON;
 import com.yang.gateway.dao.RoutesRepository;
+import com.yang.gateway.limiter.RedisLocker;
+import com.yang.gateway.utils.RedisUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +22,14 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class GatewayApplicationTests   {
 
-//    @Autowired
-//    private StringRedisTemplate redisTemplate;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @Autowired
     private RoutesRepository routesRepository;
@@ -34,7 +37,28 @@ public class GatewayApplicationTests   {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @Autowired
+    private RedisLocker redisLocker;
+
+    @Autowired
+    private RedisUtils redisUtils;
+
     public static final String GATEWAY_ROUTES = "geteway_routes";
+
+
+    @Test
+    public void redisTest() {
+        redisTemplate.opsForValue().setIfAbsent("lock:hole", "hello");
+        redisTemplate.opsForValue().getOperations().expire("lock:hole", 5, TimeUnit.MINUTES);
+
+    }
+
+    @Test
+    public void redisLockTest() {
+        System.out.println("redis time: " + redisUtils.getNowTime());
+        System.out.println("server time: " + new Date().getTime());
+
+    }
 
     @Test
     public void contextLoads() throws InterruptedException {
