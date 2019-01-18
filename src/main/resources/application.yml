@@ -2,7 +2,7 @@ spring:
   kafka:
     template:
       default-topic: gateway
-    bootstrap-servers: 10.124.210.54:9092,10.124.210.54:9093,10.124.210.55:9092,10.124.210.55:9093
+    bootstrap-servers: localhost:9092,localhost:9093,localhost:9092,localhost:9093
     consumer:
       auto-offset-reset: latest
       group-id: gateway
@@ -20,7 +20,7 @@ spring:
       datasource: mongo
       routes:
       - id: test
-        uri: http://10.124.210.86/workbench/users1?pageNum=1&pageSize=5
+        uri: http://localhost:8090/hello
         predicates:
         - Path=/test
         filters:
