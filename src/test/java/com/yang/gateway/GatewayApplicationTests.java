@@ -3,6 +3,7 @@ package com.yang.gateway;
 import com.alibaba.fastjson.JSON;
 import com.yang.gateway.dao.RoutesRepository;
 import com.yang.gateway.limiter.RedisLocker;
+import com.yang.gateway.service.LuaRateLimiterService;
 import com.yang.gateway.utils.RedisUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,6 +44,10 @@ public class GatewayApplicationTests   {
     @Autowired
     private RedisUtils redisUtils;
 
+    @Autowired
+    private LuaRateLimiterService luaRateLimiterService;
+
+
     public static final String GATEWAY_ROUTES = "geteway_routes";
 
 
@@ -51,6 +56,16 @@ public class GatewayApplicationTests   {
         redisTemplate.opsForValue().setIfAbsent("lock:hole", "hello");
         redisTemplate.opsForValue().getOperations().expire("lock:hole", 5, TimeUnit.MINUTES);
 
+    }
+
+    @Test
+    public void luaRedisTest() {
+//        String RateLimiter
+//        luaRateLimiterService.initRateLimiter("hello", "100", "100");
+        Long timeNow = System.currentTimeMillis();
+        for (int i = 0; i <1000 ; i++) {
+            System.out.println(luaRateLimiterService.acquire("RateLimiter:test", "100", "100", "1", timeNow.toString()));
+        }
     }
 
     @Test

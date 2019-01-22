@@ -18,6 +18,9 @@ spring:
   cloud:
     gateway:
       datasource: mongo
+      ip-access-frequency:
+        max-permits: 100
+        rate: 100
       routes:
       - id: test
         uri: http://localhost:8090/hello

@@ -42,7 +42,6 @@ public class LuaRateLimiterService {
      * @param key 标识
      * @param maxPermits 桶最大token数
      * @param rate 添加token速度
-     * @param app app列表
      * @return 成功返回 1, String app
      */
     public Long initRateLimiter(String key, String maxPermits, String rate) {
@@ -51,12 +50,14 @@ public class LuaRateLimiterService {
         return redisTemplate.execute(getRedisScript, keys, "init", maxPermits, rate);
     }
 
+
     /**
-     * @param key 标识
-     * @param permits 尝试获取permits数量
-     * @param currentMillSecond 当前时间 ms
-     * @param context
-     * @return 没有桶返回0 成功返回1 失败返回-1 key, max_permits, rate ,permits, curr_mill_second
+     * @param key
+     * @param maxPermits
+     * @param rate
+     * @param permits
+     * @param currentMillSecond
+     * @return 没有桶返回0 成功返回1 失败返回-1
      */
     public Long acquire(String key, String maxPermits, String rate, String permits, String currentMillSecond) {
         List<String> keys = new ArrayList<>();

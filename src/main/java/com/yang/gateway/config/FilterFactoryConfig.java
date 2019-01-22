@@ -1,5 +1,6 @@
 package com.yang.gateway.config;
 
+import com.yang.gateway.filters.GlobalIpAccessFrequencyFilter;
 import com.yang.gateway.filters.MipRateLimiterGatewayFilterFactory;
 import com.yang.gateway.filters.VisitLogFilter;
 import com.yang.gateway.utils.RedisUtils;
@@ -23,8 +24,13 @@ public class FilterFactoryConfig {
     }
 
     @Bean
-    public RedisUtils getRedisUtils() {
-        return new RedisUtils();
+    public GlobalIpAccessFrequencyFilter globalIpAccessFrequencyFilter() {
+        return new GlobalIpAccessFrequencyFilter();
     }
+
+//    @Bean
+//    public RedisUtils getRedisUtils() {
+//        return new RedisUtils();
+//    }
 
 }

@@ -2,6 +2,7 @@ package com.yang.gateway.service;
 
 import com.google.common.util.concurrent.RateLimiter;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -92,16 +93,17 @@ public class FunnelRateLimiter {
 
         @Override
         public void run() {
-            try {
-                for (int i = 0; i < 1000; i++) {
+
+            for (int i = 0; i < 1000; i++) {
+                try {
                     new MipHttpClient().sendGet(URL);
                     count ++ ;
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                countDown.countDown();
             }
+            countDown.countDown();
+
         }
     }
 

@@ -70,6 +70,10 @@ local function acquire(key, init_max_permits, init_rate ,permits, curr_mill_seco
         if init_result ~= true then
             return 0;
         end
+        last_mill_second = curr_mill_second
+        curr_permits = init_max_permits
+        max_permits = init_max_permits
+        rate = init_rate
     end
 
     local local_curr_permits = max_permits;
