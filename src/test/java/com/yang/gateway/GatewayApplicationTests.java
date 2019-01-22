@@ -1,25 +1,18 @@
 package com.yang.gateway;
 
-import com.alibaba.fastjson.JSON;
 import com.yang.gateway.dao.RoutesRepository;
-import com.yang.gateway.limiter.RedisLocker;
 import com.yang.gateway.service.LuaRateLimiterService;
-import com.yang.gateway.utils.RedisUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
-import org.springframework.cloud.gateway.filter.factory.HystrixGatewayFilterFactory;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.util.*;
@@ -37,12 +30,6 @@ public class GatewayApplicationTests   {
 
     @Autowired
     private MongoTemplate mongoTemplate;
-
-    @Autowired
-    private RedisLocker redisLocker;
-
-    @Autowired
-    private RedisUtils redisUtils;
 
     @Autowired
     private LuaRateLimiterService luaRateLimiterService;
@@ -70,8 +57,6 @@ public class GatewayApplicationTests   {
 
     @Test
     public void redisLockTest() {
-        System.out.println("redis time: " + redisUtils.getNowTime());
-        System.out.println("server time: " + new Date().getTime());
 
     }
 

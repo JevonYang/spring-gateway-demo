@@ -3,7 +3,6 @@ package com.yang.gateway.config;
 import com.yang.gateway.filters.GlobalIpAccessFrequencyFilter;
 import com.yang.gateway.filters.MipRateLimiterGatewayFilterFactory;
 import com.yang.gateway.filters.VisitLogFilter;
-import com.yang.gateway.utils.RedisUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

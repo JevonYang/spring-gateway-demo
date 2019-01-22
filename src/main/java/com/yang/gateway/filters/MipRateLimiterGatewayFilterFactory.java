@@ -1,8 +1,8 @@
 package com.yang.gateway.filters;
 
 import com.google.common.util.concurrent.RateLimiter;
-import com.yang.gateway.limiter.RateLimiterFactory;
-import com.yang.gateway.limiter.RedisRateLimiter;
+//import com.yang.gateway.limiter.RateLimiterFactory;
+//import com.yang.gateway.limiter.RedisRateLimiter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -10,7 +10,7 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
-import redis.clients.jedis.JedisCluster;
+//import redis.clients.jedis.JedisCluster;
 
 
 import java.nio.ByteBuffer;
@@ -24,11 +24,11 @@ public class MipRateLimiterGatewayFilterFactory extends AbstractGatewayFilterFac
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-    @Autowired
-    private JedisCluster jedisCluster;
-
-    @Autowired
-    private RateLimiterFactory rateLimiterFactory;
+//    @Autowired
+//    private JedisCluster jedisCluster;
+//
+//    @Autowired
+//    private RateLimiterFactory rateLimiterFactory;
 
     public double permitsPerSecond = 1000;
 
@@ -36,7 +36,7 @@ public class MipRateLimiterGatewayFilterFactory extends AbstractGatewayFilterFac
 
     public static RateLimiter rateLimiter;
 
-    public static RedisRateLimiter redisRateLimiter;
+    // public static RedisRateLimiter redisRateLimiter;
     // = RateLimiter.create(new Config().getPermitsPerSecond());
 
     public MipRateLimiterGatewayFilterFactory(Class<Config> configClass) {
@@ -48,7 +48,7 @@ public class MipRateLimiterGatewayFilterFactory extends AbstractGatewayFilterFac
     public GatewayFilter apply(Config config) {
 
         rateLimiter = (rateLimiter == null) ? RateLimiter.create(config.permitsPerSecond): rateLimiter;
-        redisRateLimiter = (redisRateLimiter == null) ? rateLimiterFactory.build(config.limiterName, config.permitsPerSecond, config.maxBurstSeconds, jedisCluster): redisRateLimiter;
+        // redisRateLimiter = (redisRateLimiter == null) ? rateLimiterFactory.build(config.limiterName, config.permitsPerSecond, config.maxBurstSeconds, jedisCluster): redisRateLimiter;
 
         return (exchange, chain) -> {
 
@@ -57,13 +57,11 @@ public class MipRateLimiterGatewayFilterFactory extends AbstractGatewayFilterFac
                     return chain.filter(exchange);
                 }
 
-                if (redisRateLimiter.tryAcquire(5000L, TimeUnit.MILLISECONDS)) {
-                    return chain.filter(exchange);
-                }
+//                if (redisRateLimiter.tryAcquire(5000L, TimeUnit.MILLISECONDS)) {
+//                    return chain.filter(exchange);
+//                }
 
             } catch (NullPointerException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
                 e.printStackTrace();
             };
             exchange.getResponse().setStatusCode(HttpStatus.TOO_MANY_REQUESTS);

@@ -1,58 +1,60 @@
 --
 -- Created by IntelliJ IDEA.
--- User: spring cloud gateway 中的redis ratelimiter脚本
--- Date: 19-1-21
--- Time: 上午10:15
+-- User: jeveon
+-- Date: 19-1-22
+-- Time: 下午4:09
 -- To change this template use File | Settings | File Templates.
 --
 
-local tokens_key = KEYS[1]
-local timestamp_key = KEYS[2]
---redis.log(redis.LOG_WARNING, "tokens_key " .. tokens_key)
+local key = KEYS[1]
+local init_max_permits = ARGV[1]
+local init_rate = ARGV[2]
+local permits = ARGV[3]
+local curr_mill_second = ARGV[4]
 
-local rate = tonumber(ARGV[1])
-local capacity = tonumber(ARGV[2])
-local now = tonumber(ARGV[3])
-local requested = tonumber(ARGV[4])
 
-local fill_time = capacity/rate
-local ttl = math.floor(fill_time*2)
+local rate_limit_info = redis.pcall("HMGET", key, "last_mill_second", "curr_permits", "max_permits", "rate") --, "apps"
 
---redis.log(redis.LOG_WARNING, "rate " .. ARGV[1])
---redis.log(redis.LOG_WARNING, "capacity " .. ARGV[2])
---redis.log(redis.LOG_WARNING, "now " .. ARGV[3])
---redis.log(redis.LOG_WARNING, "requested " .. ARGV[4])
---redis.log(redis.LOG_WARNING, "filltime " .. fill_time)
---redis.log(redis.LOG_WARNING, "ttl " .. ttl)
+local last_mill_second = rate_limit_info[1]
+local curr_permits = tonumber(rate_limit_info[2])
+local max_permits = tonumber(rate_limit_info[3])
+local rate = rate_limit_info[4]
 
-local last_tokens = tonumber(redis.call("get", tokens_key))
-if last_tokens == nil then
-    last_tokens = capacity
-end
---redis.log(redis.LOG_WARNING, "last_tokens " .. last_tokens)
+local expire_time = math.floor((init_max_permits/init_rate)*2)
 
-local last_refreshed = tonumber(redis.call("get", timestamp_key))
-if last_refreshed == nil then
-    last_refreshed = 0
-end
---redis.log(redis.LOG_WARNING, "last_refreshed " .. last_refreshed)
-
-local delta = math.max(0, now-last_refreshed)
-local filled_tokens = math.min(capacity, last_tokens+(delta*rate))
-local allowed = filled_tokens >= requested
-local new_tokens = filled_tokens
-local allowed_num = 0
-if allowed then
-    new_tokens = filled_tokens - requested
-    allowed_num = 1
+if curr_permits == nil or max_permits== nil or rate == nil then
+    redis.pcall("HMSET", key, "max_permits", init_max_permits, "rate", init_rate, "curr_permits", max_permits)
+    redis.pcall("EXPIRE", key, expire_time)
+    last_mill_second = curr_mill_second
+    curr_permits = init_max_permits
+    max_permits = init_max_permits
+    rate = init_rate
 end
 
---redis.log(redis.LOG_WARNING, "delta " .. delta)
---redis.log(redis.LOG_WARNING, "filled_tokens " .. filled_tokens)
---redis.log(redis.LOG_WARNING, "allowed_num " .. allowed_num)
---redis.log(redis.LOG_WARNING, "new_tokens " .. new_tokens)
+local local_curr_permits = max_permits;
 
-redis.call("setex", tokens_key, ttl, new_tokens)
-redis.call("setex", timestamp_key, ttl, now)
+if (type(last_mill_second) ~= 'boolean'  and last_mill_second ~= nil) then
+    local reverse_permits = math.floor(((curr_mill_second - last_mill_second) / 1000) * rate)
+    local expect_curr_permits = reverse_permits + curr_permits;
+    local_curr_permits = math.min(expect_curr_permits, max_permits);
 
-return { allowed_num, new_tokens }
+    if (reverse_permits > 0) then
+        redis.pcall("HSET", key, "last_mill_second", curr_mill_second)
+    end
+else
+    redis.pcall("HSET", key, "last_mill_second", curr_mill_second)
+end
+
+
+local result = -1
+if (local_curr_permits - permits >= 0) then
+    result = 1
+    redis.pcall("HSET", key, "curr_permits", local_curr_permits - permits)
+else
+    redis.pcall("HSET", key, "curr_permits", local_curr_permits)
+end
+
+redis.pcall("EXPIRE", key, expire_time)
+
+return result
+

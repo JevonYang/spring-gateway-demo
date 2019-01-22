@@ -1,0 +1,38 @@
+clusterServersConfig:
+  idleConnectionTimeout: 10000
+  pingTimeout: 1000
+  connectTimeout: 10000
+  timeout: 3000
+  retryAttempts: 3
+  retryInterval: 1500
+  reconnectionTimeout: 3000
+  failedAttempts: 3
+  password: docRDS@2018
+  subscriptionsPerConnection: 5
+  clientName: null
+  loadBalancer: !<org.redisson.connection.balancer.RoundRobinLoadBalancer> {}
+  slaveSubscriptionConnectionMinimumIdleSize: 1
+  slaveSubscriptionConnectionPoolSize: 50
+  slaveConnectionMinimumIdleSize: 32
+  slaveConnectionPoolSize: 64
+  masterConnectionMinimumIdleSize: 32
+  masterConnectionPoolSize: 64
+  readMode: "SLAVE"
+  nodeAddresses:
+    - "redis://10.124.210.48:7000"
+    - "redis://10.124.210.48:7001"
+    - "redis://10.124.210.48:7002"
+    - "redis://10.124.210.49:7000"
+    - "redis://10.124.210.49:7001"
+    - "redis://10.124.210.49:7002"
+    - "redis://10.124.210.50:7000"
+    - "redis://10.124.210.50:7001"
+    - "redis://10.124.210.50:7002"
+    - "redis://10.124.210.51:7000"
+    - "redis://10.124.210.51:7001"
+    - "redis://10.124.210.51:7002"
+  scanInterval: 1000
+threads: 0
+nettyThreads: 0
+codec: !<org.redisson.codec.JsonJacksonCodec> {}
+transportMode: "NIO"
