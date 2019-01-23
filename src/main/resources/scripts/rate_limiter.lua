@@ -23,7 +23,7 @@ local rate = rate_limit_info[4]
 local expire_time = math.floor((init_max_permits/init_rate)*2)
 
 if curr_permits == nil or max_permits== nil or rate == nil then
-    redis.pcall("HMSET", key, "max_permits", init_max_permits, "rate", init_rate, "curr_permits", max_permits)
+    redis.pcall("HMSET", key, "max_permits", init_max_permits, "rate", init_rate, "curr_permits", init_max_permits)
     redis.pcall("EXPIRE", key, expire_time)
     last_mill_second = curr_mill_second
     curr_permits = init_max_permits
