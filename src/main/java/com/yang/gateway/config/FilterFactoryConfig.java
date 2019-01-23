@@ -1,8 +1,8 @@
 package com.yang.gateway.config;
 
-import com.yang.gateway.filters.GlobalIpAccessFrequencyFilter;
+import com.yang.gateway.filters.GlobalIpAccessFrequencyGlobalFilter;
 import com.yang.gateway.filters.MipRateLimiterGatewayFilterFactory;
-import com.yang.gateway.filters.VisitLogFilter;
+import com.yang.gateway.filters.VisitLogGlobalFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,13 +18,13 @@ public class FilterFactoryConfig {
     }
 
     @Bean
-    public VisitLogFilter getVisitLogFilter() {
-        return new VisitLogFilter();
+    public VisitLogGlobalFilter getVisitLogFilter() {
+        return new VisitLogGlobalFilter();
     }
 
     @Bean
-    public GlobalIpAccessFrequencyFilter globalIpAccessFrequencyFilter() {
-        return new GlobalIpAccessFrequencyFilter();
+    public GlobalIpAccessFrequencyGlobalFilter globalIpAccessFrequencyFilter() {
+        return new GlobalIpAccessFrequencyGlobalFilter();
     }
 
 //    @Bean

@@ -15,9 +15,9 @@ import reactor.core.publisher.Mono;
 /**
  * @author jevon
  */
-public class VisitLogFilter implements GlobalFilter, Ordered {
+public class VisitLogGlobalFilter implements GlobalFilter, Ordered {
 
-    private static final Logger log = LoggerFactory.getLogger(VisitLogFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(VisitLogGlobalFilter.class);
 
     private static final int VISIT_LOG_FILTER_ORDER = 10000;
 
@@ -34,7 +34,7 @@ public class VisitLogFilter implements GlobalFilter, Ordered {
 
         try {
             ServerHttpRequest request = exchange.getRequest();
-            String remoteAddress = request.getRemoteAddress().toString();
+            String remoteAddress = request.getRemoteAddress().toString().substring(1).split(":")[0];
             VisitLogEntity.VisitLog.Builder builder = VisitLogEntity.VisitLog.newBuilder();
             builder.setMethod(request.getMethod().toString());
             builder.setRemoteAddress(remoteAddress);

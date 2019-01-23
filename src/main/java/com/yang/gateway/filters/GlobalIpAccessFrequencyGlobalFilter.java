@@ -15,9 +15,9 @@ import reactor.core.publisher.Mono;
 /**
  * @author jevon
  */
-public class GlobalIpAccessFrequencyFilter implements GlobalFilter, Ordered {
+public class GlobalIpAccessFrequencyGlobalFilter implements GlobalFilter, Ordered {
 
-    private final Logger logger = LoggerFactory.getLogger(GlobalIpAccessFrequencyFilter.class);
+    private final Logger logger = LoggerFactory.getLogger(GlobalIpAccessFrequencyGlobalFilter.class);
 
     @Autowired
     private LuaRateLimiterService rateLimiterService;
@@ -28,16 +28,18 @@ public class GlobalIpAccessFrequencyFilter implements GlobalFilter, Ordered {
     @Value("${spring.cloud.gateway.ip-access-frequency.rate}")
     private String rate;
 
-    private static String REMOTE_ADDRESS_RATE_LIMITER_PREFIX = "RateLimiter:Ip:";
+    private static String REMOTE_ADDRESS_RATE_LIMITER_PREFIX = "RateLimiter:IP:";
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        String ip = exchange.getRequest().getRemoteAddress().toString();
-
-        Long secondMills = System.currentTimeMillis();
-        if (rateLimiterService.acquire(REMOTE_ADDRESS_RATE_LIMITER_PREFIX+ip, maxPermits, rate, "1", secondMills.toString()) == 1) {
-            logger.info("================"+ip+"================");
-            return chain.filter(exchange);
+        try {
+            String ip = exchange.getRequest().getRemoteAddress().toString().substring(1).split(":")[0];
+            if (rateLimiterService.acquire(REMOTE_ADDRESS_RATE_LIMITER_PREFIX+ip, maxPermits, rate, "1", System.currentTimeMillis()+"") == 1) {
+                logger.debug("================"+ip+"================");
+                return chain.filter(exchange);
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
         exchange.getResponse().setStatusCode(HttpStatus.TOO_MANY_REQUESTS);
         return exchange.getResponse().setComplete();
