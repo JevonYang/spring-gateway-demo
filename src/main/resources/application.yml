@@ -2,7 +2,7 @@ spring:
   kafka:
     template:
       default-topic: gateway
-    bootstrap-servers: localhost:9092,localhost:9093,localhost:9092,localhost:9093
+    bootstrap-servers: localhost:9092,localhost:9093,localhost:9092,localhost:9093 # 配置kafka集群地址
     consumer:
       auto-offset-reset: latest
       group-id: gateway
@@ -17,8 +17,8 @@ spring:
       client-id: mip-gateway
   cloud:
     gateway:
-      datasource: mongo
-      ip-access-frequency:
+      datasource: mongo # 是否启用mongodb作为routes的持久化端，也可以配置成redis，相应的routes信息需要写入对应数据库
+      ip-access-frequency: # 全局的GlobalIpAccessFrequency配置
         max-permits: 100
         rate: 100
       routes:
@@ -41,15 +41,15 @@ spring:
       host: localhost
       port: 27017
   redis:
-    host: localhost
-    port: 6379
-    cluster:
-      nodes: localhost:6379,localhost:6380,localhost:6381
-      max-redirects: 3
+    host: localhost # standalone模式 配置这里
+    port: 6379 # standalone模式 配置这里
+    #cluster:                                                #集群模式配置这里
+    #  nodes: localhost:6379,localhost:6380,localhost:6381   #集群模式配置这里
+    #  max-redirects: 3                                      #集群模式配置这里
     database: 0
     timeout: 6000
     password: 123456
-    lettuce:
+    lettuce: # 使用了lettuce连接池，jedis对于集群执行lua脚本支持不完善
       pool:
         max-active: 8
         max-wait: 5000

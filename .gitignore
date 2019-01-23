@@ -24,3 +24,4 @@
 /nbdist/
 /.nb-gradle/
 application-local.yml
+redisson-test.yaml
