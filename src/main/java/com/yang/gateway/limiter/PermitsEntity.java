@@ -19,29 +19,24 @@ public final class PermitsEntity {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <pre>
-     *    double permitsPerSecond = 1;
-     *    int32 maxBurstSeconds=2;
-     * </pre>
-     *
      * <code>int64 maxPermits = 1;</code>
      */
     long getMaxPermits();
 
     /**
-     * <code>int64 storedPermits = 2;</code>
+     * <code>int64 currentPermits = 2;</code>
      */
-    long getStoredPermits();
+    long getCurrentPermits();
 
     /**
-     * <code>int64 intervalMillis = 3;</code>
+     * <code>int64 rate = 3;</code>
      */
-    long getIntervalMillis();
+    long getRate();
 
     /**
-     * <code>int64 nextFreeTicketMillis = 4;</code>
+     * <code>int64 lastMilliSecond = 4;</code>
      */
-    long getNextFreeTicketMillis();
+    long getLastMilliSecond();
   }
   /**
    * Protobuf type {@code Permits}
@@ -57,9 +52,9 @@ public final class PermitsEntity {
     }
     private Permits() {
       maxPermits_ = 0L;
-      storedPermits_ = 0L;
-      intervalMillis_ = 0L;
-      nextFreeTicketMillis_ = 0L;
+      currentPermits_ = 0L;
+      rate_ = 0L;
+      lastMilliSecond_ = 0L;
     }
 
     @java.lang.Override
@@ -93,17 +88,17 @@ public final class PermitsEntity {
             }
             case 16: {
 
-              storedPermits_ = input.readInt64();
+              currentPermits_ = input.readInt64();
               break;
             }
             case 24: {
 
-              intervalMillis_ = input.readInt64();
+              rate_ = input.readInt64();
               break;
             }
             case 32: {
 
-              nextFreeTicketMillis_ = input.readInt64();
+              lastMilliSecond_ = input.readInt64();
               break;
             }
             default: {
@@ -141,42 +136,37 @@ public final class PermitsEntity {
     public static final int MAXPERMITS_FIELD_NUMBER = 1;
     private long maxPermits_;
     /**
-     * <pre>
-     *    double permitsPerSecond = 1;
-     *    int32 maxBurstSeconds=2;
-     * </pre>
-     *
      * <code>int64 maxPermits = 1;</code>
      */
     public long getMaxPermits() {
       return maxPermits_;
     }
 
-    public static final int STOREDPERMITS_FIELD_NUMBER = 2;
-    private long storedPermits_;
+    public static final int CURRENTPERMITS_FIELD_NUMBER = 2;
+    private long currentPermits_;
     /**
-     * <code>int64 storedPermits = 2;</code>
+     * <code>int64 currentPermits = 2;</code>
      */
-    public long getStoredPermits() {
-      return storedPermits_;
+    public long getCurrentPermits() {
+      return currentPermits_;
     }
 
-    public static final int INTERVALMILLIS_FIELD_NUMBER = 3;
-    private long intervalMillis_;
+    public static final int RATE_FIELD_NUMBER = 3;
+    private long rate_;
     /**
-     * <code>int64 intervalMillis = 3;</code>
+     * <code>int64 rate = 3;</code>
      */
-    public long getIntervalMillis() {
-      return intervalMillis_;
+    public long getRate() {
+      return rate_;
     }
 
-    public static final int NEXTFREETICKETMILLIS_FIELD_NUMBER = 4;
-    private long nextFreeTicketMillis_;
+    public static final int LASTMILLISECOND_FIELD_NUMBER = 4;
+    private long lastMilliSecond_;
     /**
-     * <code>int64 nextFreeTicketMillis = 4;</code>
+     * <code>int64 lastMilliSecond = 4;</code>
      */
-    public long getNextFreeTicketMillis() {
-      return nextFreeTicketMillis_;
+    public long getLastMilliSecond() {
+      return lastMilliSecond_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -196,14 +186,14 @@ public final class PermitsEntity {
       if (maxPermits_ != 0L) {
         output.writeInt64(1, maxPermits_);
       }
-      if (storedPermits_ != 0L) {
-        output.writeInt64(2, storedPermits_);
+      if (currentPermits_ != 0L) {
+        output.writeInt64(2, currentPermits_);
       }
-      if (intervalMillis_ != 0L) {
-        output.writeInt64(3, intervalMillis_);
+      if (rate_ != 0L) {
+        output.writeInt64(3, rate_);
       }
-      if (nextFreeTicketMillis_ != 0L) {
-        output.writeInt64(4, nextFreeTicketMillis_);
+      if (lastMilliSecond_ != 0L) {
+        output.writeInt64(4, lastMilliSecond_);
       }
       unknownFields.writeTo(output);
     }
@@ -218,17 +208,17 @@ public final class PermitsEntity {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(1, maxPermits_);
       }
-      if (storedPermits_ != 0L) {
+      if (currentPermits_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(2, storedPermits_);
+          .computeInt64Size(2, currentPermits_);
       }
-      if (intervalMillis_ != 0L) {
+      if (rate_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(3, intervalMillis_);
+          .computeInt64Size(3, rate_);
       }
-      if (nextFreeTicketMillis_ != 0L) {
+      if (lastMilliSecond_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(4, nextFreeTicketMillis_);
+          .computeInt64Size(4, lastMilliSecond_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -248,12 +238,12 @@ public final class PermitsEntity {
       boolean result = true;
       result = result && (getMaxPermits()
           == other.getMaxPermits());
-      result = result && (getStoredPermits()
-          == other.getStoredPermits());
-      result = result && (getIntervalMillis()
-          == other.getIntervalMillis());
-      result = result && (getNextFreeTicketMillis()
-          == other.getNextFreeTicketMillis());
+      result = result && (getCurrentPermits()
+          == other.getCurrentPermits());
+      result = result && (getRate()
+          == other.getRate());
+      result = result && (getLastMilliSecond()
+          == other.getLastMilliSecond());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -268,15 +258,15 @@ public final class PermitsEntity {
       hash = (37 * hash) + MAXPERMITS_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getMaxPermits());
-      hash = (37 * hash) + STOREDPERMITS_FIELD_NUMBER;
+      hash = (37 * hash) + CURRENTPERMITS_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getStoredPermits());
-      hash = (37 * hash) + INTERVALMILLIS_FIELD_NUMBER;
+          getCurrentPermits());
+      hash = (37 * hash) + RATE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getIntervalMillis());
-      hash = (37 * hash) + NEXTFREETICKETMILLIS_FIELD_NUMBER;
+          getRate());
+      hash = (37 * hash) + LASTMILLISECOND_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getNextFreeTicketMillis());
+          getLastMilliSecond());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -412,11 +402,11 @@ public final class PermitsEntity {
         super.clear();
         maxPermits_ = 0L;
 
-        storedPermits_ = 0L;
+        currentPermits_ = 0L;
 
-        intervalMillis_ = 0L;
+        rate_ = 0L;
 
-        nextFreeTicketMillis_ = 0L;
+        lastMilliSecond_ = 0L;
 
         return this;
       }
@@ -445,9 +435,9 @@ public final class PermitsEntity {
       public com.yang.gateway.limiter.PermitsEntity.Permits buildPartial() {
         com.yang.gateway.limiter.PermitsEntity.Permits result = new com.yang.gateway.limiter.PermitsEntity.Permits(this);
         result.maxPermits_ = maxPermits_;
-        result.storedPermits_ = storedPermits_;
-        result.intervalMillis_ = intervalMillis_;
-        result.nextFreeTicketMillis_ = nextFreeTicketMillis_;
+        result.currentPermits_ = currentPermits_;
+        result.rate_ = rate_;
+        result.lastMilliSecond_ = lastMilliSecond_;
         onBuilt();
         return result;
       }
@@ -499,14 +489,14 @@ public final class PermitsEntity {
         if (other.getMaxPermits() != 0L) {
           setMaxPermits(other.getMaxPermits());
         }
-        if (other.getStoredPermits() != 0L) {
-          setStoredPermits(other.getStoredPermits());
+        if (other.getCurrentPermits() != 0L) {
+          setCurrentPermits(other.getCurrentPermits());
         }
-        if (other.getIntervalMillis() != 0L) {
-          setIntervalMillis(other.getIntervalMillis());
+        if (other.getRate() != 0L) {
+          setRate(other.getRate());
         }
-        if (other.getNextFreeTicketMillis() != 0L) {
-          setNextFreeTicketMillis(other.getNextFreeTicketMillis());
+        if (other.getLastMilliSecond() != 0L) {
+          setLastMilliSecond(other.getLastMilliSecond());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -539,22 +529,12 @@ public final class PermitsEntity {
 
       private long maxPermits_ ;
       /**
-       * <pre>
-       *    double permitsPerSecond = 1;
-       *    int32 maxBurstSeconds=2;
-       * </pre>
-       *
        * <code>int64 maxPermits = 1;</code>
        */
       public long getMaxPermits() {
         return maxPermits_;
       }
       /**
-       * <pre>
-       *    double permitsPerSecond = 1;
-       *    int32 maxBurstSeconds=2;
-       * </pre>
-       *
        * <code>int64 maxPermits = 1;</code>
        */
       public Builder setMaxPermits(long value) {
@@ -564,11 +544,6 @@ public final class PermitsEntity {
         return this;
       }
       /**
-       * <pre>
-       *    double permitsPerSecond = 1;
-       *    int32 maxBurstSeconds=2;
-       * </pre>
-       *
        * <code>int64 maxPermits = 1;</code>
        */
       public Builder clearMaxPermits() {
@@ -578,80 +553,80 @@ public final class PermitsEntity {
         return this;
       }
 
-      private long storedPermits_ ;
+      private long currentPermits_ ;
       /**
-       * <code>int64 storedPermits = 2;</code>
+       * <code>int64 currentPermits = 2;</code>
        */
-      public long getStoredPermits() {
-        return storedPermits_;
+      public long getCurrentPermits() {
+        return currentPermits_;
       }
       /**
-       * <code>int64 storedPermits = 2;</code>
+       * <code>int64 currentPermits = 2;</code>
        */
-      public Builder setStoredPermits(long value) {
+      public Builder setCurrentPermits(long value) {
         
-        storedPermits_ = value;
+        currentPermits_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int64 storedPermits = 2;</code>
+       * <code>int64 currentPermits = 2;</code>
        */
-      public Builder clearStoredPermits() {
+      public Builder clearCurrentPermits() {
         
-        storedPermits_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private long intervalMillis_ ;
-      /**
-       * <code>int64 intervalMillis = 3;</code>
-       */
-      public long getIntervalMillis() {
-        return intervalMillis_;
-      }
-      /**
-       * <code>int64 intervalMillis = 3;</code>
-       */
-      public Builder setIntervalMillis(long value) {
-        
-        intervalMillis_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>int64 intervalMillis = 3;</code>
-       */
-      public Builder clearIntervalMillis() {
-        
-        intervalMillis_ = 0L;
+        currentPermits_ = 0L;
         onChanged();
         return this;
       }
 
-      private long nextFreeTicketMillis_ ;
+      private long rate_ ;
       /**
-       * <code>int64 nextFreeTicketMillis = 4;</code>
+       * <code>int64 rate = 3;</code>
        */
-      public long getNextFreeTicketMillis() {
-        return nextFreeTicketMillis_;
+      public long getRate() {
+        return rate_;
       }
       /**
-       * <code>int64 nextFreeTicketMillis = 4;</code>
+       * <code>int64 rate = 3;</code>
        */
-      public Builder setNextFreeTicketMillis(long value) {
+      public Builder setRate(long value) {
         
-        nextFreeTicketMillis_ = value;
+        rate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int64 nextFreeTicketMillis = 4;</code>
+       * <code>int64 rate = 3;</code>
        */
-      public Builder clearNextFreeTicketMillis() {
+      public Builder clearRate() {
         
-        nextFreeTicketMillis_ = 0L;
+        rate_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long lastMilliSecond_ ;
+      /**
+       * <code>int64 lastMilliSecond = 4;</code>
+       */
+      public long getLastMilliSecond() {
+        return lastMilliSecond_;
+      }
+      /**
+       * <code>int64 lastMilliSecond = 4;</code>
+       */
+      public Builder setLastMilliSecond(long value) {
+        
+        lastMilliSecond_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 lastMilliSecond = 4;</code>
+       */
+      public Builder clearLastMilliSecond() {
+        
+        lastMilliSecond_ = 0L;
         onChanged();
         return this;
       }
@@ -722,11 +697,10 @@ public final class PermitsEntity {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rpermits.proto\"j\n\007Permits\022\022\n\nmaxPermits" +
-      "\030\001 \001(\003\022\025\n\rstoredPermits\030\002 \001(\003\022\026\n\016interva" +
-      "lMillis\030\003 \001(\003\022\034\n\024nextFreeTicketMillis\030\004 " +
-      "\001(\003B)\n\030com.yang.gateway.limiterB\rPermits" +
-      "Entityb\006proto3"
+      "\n\rpermits.proto\"\\\n\007Permits\022\022\n\nmaxPermits" +
+      "\030\001 \001(\003\022\026\n\016currentPermits\030\002 \001(\003\022\014\n\004rate\030\003" +
+      " \001(\003\022\027\n\017lastMilliSecond\030\004 \001(\003B)\n\030com.yan" +
+      "g.gateway.limiterB\rPermitsEntityb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -745,7 +719,7 @@ public final class PermitsEntity {
     internal_static_Permits_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Permits_descriptor,
-        new java.lang.String[] { "MaxPermits", "StoredPermits", "IntervalMillis", "NextFreeTicketMillis", });
+        new java.lang.String[] { "MaxPermits", "CurrentPermits", "Rate", "LastMilliSecond", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -4,29 +4,15 @@ option java_outer_classname = "PermitsEntity";
 
 message Permits {
 
-//    /**
-//     * maxPermits 最大存储令牌数
-//     */
-//    private Long maxPermits;
-//    /**
-//     * storedPermits 当前存储令牌数
-//     */
-//    private Long storedPermits;
-//    /**
-//     * intervalMillis 添加令牌时间间隔
-//     */
-//    private Long intervalMillis;
-//    /**
-//     * nextFreeTicketMillis 下次请求可以获取令牌的起始时间，默认当前系统时间
-//     */
-//    private Long nextFreeTicketMillis;
-
-//    Double permitsPerSecond, Integer maxBurstSeconds
-
-//    double permitsPerSecond = 1;
-//    int32 maxBurstSeconds=2;
+    // 最大token数量
     int64 maxPermits = 1;
-    int64 storedPermits = 2;
-    int64 intervalMillis = 3;
-    int64 nextFreeTicketMillis = 4;
+
+    // 当前token数量
+    int64 currentPermits = 2;
+
+    // 每秒添加token数量
+    int64 rate = 3;
+
+    // 上一次更新时间
+    int64 lastMilliSecond = 4;
 }
