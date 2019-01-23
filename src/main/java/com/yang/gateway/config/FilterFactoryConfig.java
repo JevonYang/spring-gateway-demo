@@ -26,10 +26,4 @@ public class FilterFactoryConfig {
     public GlobalIpAccessFrequencyGlobalFilter globalIpAccessFrequencyFilter() {
         return new GlobalIpAccessFrequencyGlobalFilter();
     }
-
-//    @Bean
-//    public RedisUtils getRedisUtils() {
-//        return new RedisUtils();
-//    }
-
 }

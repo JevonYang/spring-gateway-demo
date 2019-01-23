@@ -4,13 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
-import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * @author jevon
@@ -25,7 +22,7 @@ public class LuaRateLimiterService {
     private DefaultRedisScript<Long> getRedisScript;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         getRedisScript = new DefaultRedisScript<Long>();
         getRedisScript.setResultType(Long.class);
         getRedisScript.setLocation(new ClassPathResource("scripts/rate_limiter.lua"));

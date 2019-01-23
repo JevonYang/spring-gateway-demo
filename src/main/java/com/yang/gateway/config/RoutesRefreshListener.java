@@ -14,8 +14,8 @@ import org.springframework.kafka.annotation.KafkaListener;
  * @author yangzijing
  * @date 2018/09/30
  */
-@Configuration
-@ConditionalOnProperty(value = "spring.kafka.bootstrap-servers")
+//@Configuration
+//@ConditionalOnProperty(value = "spring.kafka.bootstrap-servers")
 public class RoutesRefreshListener implements ApplicationEventPublisherAware {
 
     private static final Logger logger = LoggerFactory.getLogger(RoutesRefreshListener.class);
@@ -33,8 +33,8 @@ public class RoutesRefreshListener implements ApplicationEventPublisherAware {
 //        this.publisher.publishEvent(new RefreshRoutesEvent(this));
 //    }
 
-    @KafkaListener(topics = { "gateway-log" })
-    public void gatewayLogger(ConsumerRecord<?, ?> record) {
-        logger.info("gateway-log key: {}; gateway-log value: {}", record.key(), record.value().toString());
-    }
+//    @KafkaListener(topics = { "gateway-log" })
+//    public void gatewayLogger(ConsumerRecord<?, ?> record) {
+//        logger.info("gateway-log key: {}; gateway-log value: {}", record.key(), record.value().toString());
+//    }
 }
