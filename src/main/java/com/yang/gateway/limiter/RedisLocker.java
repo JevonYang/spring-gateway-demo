@@ -20,23 +20,23 @@ public class RedisLocker {
     }
 
     public RLock lock(String lockKey) {
-        RLock rLock = this.getRLock(lockKey);
+        RLock rLock = this.getRLock("Lock:" +lockKey);
         rLock.lock();
         return rLock;
     }
 
     public RLock lock(String lockKey, long leaseTime) {
-        return this.lock(lockKey, leaseTime, TimeUnit.SECONDS);
+        return this.lock("Lock:" +lockKey, leaseTime, TimeUnit.SECONDS);
     }
 
     public RLock lock(String lockKey, long leaseTime, TimeUnit timeUnit) {
-        RLock rLock = this.getRLock(lockKey);
+        RLock rLock = this.getRLock("Lock:" +lockKey);
         rLock.lock(leaseTime, timeUnit);
         return rLock;
     }
 
     public boolean tryLock(String lockKey, long waitTime, long leaseTime, TimeUnit timeUnit) {
-        RLock rLock = this.getRLock(lockKey);
+        RLock rLock = this.getRLock("Lock:" +lockKey);
         try {
             return rLock.tryLock(waitTime, leaseTime, timeUnit);
         } catch (InterruptedException e) {
@@ -46,7 +46,7 @@ public class RedisLocker {
     }
 
     public void unLock(String lockKey) {
-        RLock rLock = this.getRLock(lockKey);
+        RLock rLock = this.getRLock("Lock:" +lockKey);
         rLock.unlock();
     }
 
@@ -62,7 +62,7 @@ public class RedisLocker {
         if( null == this.redissonClient ){
             throw new NullPointerException("redisson client is null.");
         }
-        return this.redissonClient.getLock(lockKey);
+        return this.redissonClient.getLock("Lock:" +lockKey);
     }
 
 }

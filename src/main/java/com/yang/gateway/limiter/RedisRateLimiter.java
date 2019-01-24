@@ -37,17 +37,21 @@ public class RedisRateLimiter {
 
     private void setPermits(String sKey, PermitsEntity.Permits permits) {
         // long ttl = (permits.getMaxPermits() / permits.getRate()) * 2;
-        redisTemplate.opsForValue().set(sKey, permits.toByteArray().toString());
+        redisTemplate.opsForValue().set("RateLimiter:" + sKey, permits.toByteArray().toString());
     }
 
     private void setPermits(String sKey, Permits permits) {
         // long ttl = (permits.getMaxPermits() / permits.getRate()) * 2;
-        redisTemplate.opsForValue().set(sKey, JSONObject.toJSONString(permits));
+        redisTemplate.opsForValue().set("RateLimiter:" + sKey, JSONObject.toJSONString(permits));
     }
 
     private PermitsEntity.Permits getPermits(String sKey) {
         try {
-            return PermitsEntity.Permits.parseFrom(redisTemplate.opsForValue().get(sKey).getBytes());
+            String data = redisTemplate.opsForValue().get("RateLimiter:" + sKey);
+            if (data != null) {
+                return PermitsEntity.Permits.parseFrom(data.getBytes());
+            }
+            return null;
         } catch (InvalidProtocolBufferException e) {
             e.printStackTrace();
         }
@@ -55,13 +59,13 @@ public class RedisRateLimiter {
     }
 
     private Permits getPermit(String sKey) {
-        return JSON.parseObject(redisTemplate.opsForValue().get(sKey), Permits.class);
+        return JSON.parseObject(redisTemplate.opsForValue().get("RateLimiter:" + sKey), Permits.class);
     }
 
     private PermitsEntity.Permits getPermit() {
-        this.redisLocker.lock("Lock:" + this.key, 500, TimeUnit.MILLISECONDS);
+        this.redisLocker.lock(this.key, 500, TimeUnit.MILLISECONDS);
         try {
-            PermitsEntity.Permits permits = this.getPermits("RateLimiter:" + this.key);
+            PermitsEntity.Permits permits = this.getPermits(this.key);
             if (permits == null) {
                 PermitsEntity.Permits.Builder builder = PermitsEntity.Permits.newBuilder();
                 builder.setMaxPermits(this.maxPermits);
@@ -72,13 +76,13 @@ public class RedisRateLimiter {
             }
             return permits;
         } finally {
-            this.redisLocker.unLock("Lock:" + this.key);
+            this.redisLocker.unLock(this.key);
         }
     }
 
     private Permits getDefaultPermits() {
-        this.redisLocker.lock("Lock:" + this.key, 500, TimeUnit.MILLISECONDS);
-        Permits permits = this.getPermit("RateLimiter:" + this.key);
+        this.redisLocker.lock(this.key, 500, TimeUnit.MILLISECONDS);
+        Permits permits = this.getPermit(this.key);
         try {
             if (permits == null) {
                 return new Permits(this.maxPermits, this.maxPermits, this.rate, System.currentTimeMillis());
@@ -87,24 +91,30 @@ public class RedisRateLimiter {
         } catch (NullPointerException e) {
             e.printStackTrace();
         } finally {
-            this.redisLocker.unLock("Lock:" + this.key);
+            this.redisLocker.unLock(this.key);
         }
         return permits;
     }
 
-    public boolean tryAcquire(long queryPermits) {
+
+    /**
+     * 用json序列化的逻辑
+     * @param queryPermits
+     * @return
+     */
+    private boolean tryAcquire(long queryPermits) {
         try {
-            this.redisLocker.lock("Lock:" + key, 500L, TimeUnit.MILLISECONDS);
+            this.redisLocker.lock( key, 500L, TimeUnit.MILLISECONDS);
             Permits permits = this.getDefaultPermits();
             long fillTokens = (System.currentTimeMillis() - permits.getLastMilliSecond()) / (permits.getRate() * 1000);
             long currentPermits = permits.getCurrentPermits();
             if (fillTokens >= 1) {
-                currentPermits += fillTokens;
+                currentPermits = Math.min(permits.getMaxPermits(), currentPermits + fillTokens);
             }
             if (currentPermits - queryPermits >= 0) {
                 permits.setCurrentPermits(currentPermits - queryPermits);
                 permits.setLastMilliSecond(System.currentTimeMillis());
-                this.setPermits("RateLimiter:" + key, permits);
+                this.setPermits(key, permits);
                 return true;
             } else {
                 return false;
@@ -113,13 +123,44 @@ public class RedisRateLimiter {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            this.redisLocker.unLock("Lock:" + key);
+            this.redisLocker.unLock(key);
+        }
+        return false;
+    }
+
+    /**
+     * 用protobuf序列化的逻辑
+     * @param queryPermits
+     * @return
+     */
+    private boolean tryOneAcquire(long queryPermits) {
+        try {
+            this.redisLocker.lock(key, 500L, TimeUnit.MILLISECONDS);
+            PermitsEntity.Permits permits = this.getPermit();
+            long fillTokens = (System.currentTimeMillis() - permits.getLastMilliSecond()) / (permits.getRate() * 1000);
+            long currentPermits = permits.getCurrentPermits();
+            if (fillTokens >= 1) {
+                currentPermits = Math.min(permits.getMaxPermits(), currentPermits + fillTokens);
+            }
+            if (currentPermits - queryPermits >= 0) {
+                PermitsEntity.Permits.Builder builder = permits.toBuilder();
+                builder.setCurrentPermits(currentPermits - queryPermits);
+                builder.setLastMilliSecond(System.currentTimeMillis());
+                this.setPermits(key, builder.build());
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            this.redisLocker.unLock(key);
         }
         return false;
     }
 
     public boolean tryAcquire() {
-        return this.tryAcquire(1L);
+        return this.tryOneAcquire(1L);
     }
 
 }

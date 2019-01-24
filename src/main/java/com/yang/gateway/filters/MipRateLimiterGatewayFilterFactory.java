@@ -36,7 +36,7 @@ public class MipRateLimiterGatewayFilterFactory extends AbstractGatewayFilterFac
     public GatewayFilter apply(Config config) {
 
         rateLimiter = (rateLimiter == null) ? RateLimiter.create(config.rate) : rateLimiter;
-        redisRateLimiter = (redisRateLimiter == null) ? rateLimiterFactory.build("RateLimiter:" + config.name, config.rate, config.maxPermits) : redisRateLimiter;
+        redisRateLimiter = (redisRateLimiter == null) ? rateLimiterFactory.build(config.name, config.rate, config.maxPermits) : redisRateLimiter;
 
         return (exchange, chain) -> {
 
